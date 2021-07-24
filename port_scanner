@@ -2,24 +2,33 @@
 
 import argparse
 import socket
+from threading import Thread
 
-def scan(host, port):
-    socket.setdefaulttimeout(1)
+def scan(ip, port):
     try:
         connSkt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        connSkt.connect((host, port))
+        connSkt.connect((ip, port))
         print(port, "tcp open")
         connSkt.close()
     except:
-        print(port, "tcp closed")
+        pass
 
 def main():
     parser = argparse.ArgumentParser(description="A port scanner")
     parser.add_argument("host", type=str, help="target host")
-    parser.add_argument("port", type=int, help="target port")
     args = parser.parse_args()
-    host, port = args.host, args.port
-    scan(host, port)
+
+    host = args.host
+    try:
+        ip = socket.gethostbyname(host)
+    except:
+        print("Cannot resolve", host)
+        exit(1)
+
+    socket.setdefaulttimeout(1)
+    for port in range(0, 1024):
+        t = Thread(target=scan, args=(ip, port))
+        t.start()
 
 if __name__ == '__main__':
     main()
