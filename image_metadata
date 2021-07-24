@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+
+import argparse
+import PIL.Image
+
+def getExif(imageName):
+    image = PIL.Image.open(imageName)
+    image_exif = image.getexif() 
+
+    if not image_exif:
+        print("Image has no exif data.")
+        exit(1)
+    for key, val in image_exif.items():
+        print(f'{key}:{val}')
+
+def main():
+    parser = argparse.ArgumentParser(description='get image metadata')
+    parser.add_argument('image', type=str, help='path to the image')
+    args = parser.parse_args()
+    imageName = args.image
+    getExif(imageName)
+
+if __name__ == '__main__':
+    main()
