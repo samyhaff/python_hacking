@@ -4,11 +4,6 @@ import zipfile
 from threading import Thread
 import argparse
 
-parser = argparse.ArgumentParser(description='crack password protected zip file')
-parser.add_argument('file', type=str, help='path to the archive')
-parser.add_argument('dictionary', type=str, help='path to the dictionary')
-args = parser.parse_args()
-
 def extractFile(zFile, password):
     try:
         zFile.extractall(pwd=bytes(password, 'utf-8'))
@@ -17,6 +12,11 @@ def extractFile(zFile, password):
         pass
 
 def main():
+    parser = argparse.ArgumentParser(description='crack password protected zip file')
+    parser.add_argument('file', type=str, help='path to the archive')
+    parser.add_argument('dictionary', type=str, help='path to the dictionary')
+    args = parser.parse_args()
+
     zFile = zipfile.ZipFile(args.file)
     passFile = open(args.dictionary)
     for line in passFile.readlines():
